@@ -12,22 +12,9 @@ public static class TileRenderer
     {
         BaseShape? baseShape = null;
         baseShape = new Road(feature.Coordinates);
-        // ReadOnlySpan<Coordinate> coordinates;
-        // foreach (var el in feature.Properties)
-        //     {
-        //         if(el == MapFeatureData.types.highway)
-        //         {
-        //             Console.WriteLine("am ajuns");
-        //             coordinates = feature.Coordinates;
-        //             var road = new Road(coordinates);
-        //             baseShape = road;
-        //             shapes.Enqueue(road, road.ZIndex); 
-        //         }
-        //     }
         var featureType = feature.Type;
         if (feature.Properties.Any(p => p == MapFeatureData.types.highway))
         {
-            Console.WriteLine("am ajuns");
             var coordinates = feature.Coordinates;
             var road = new Road(coordinates);
             baseShape = road;
@@ -36,23 +23,6 @@ public static class TileRenderer
         else if (feature.Properties.Any(p => p == MapFeatureData.types.water))
         {
             var coordinates = feature.Coordinates;
-            Console.WriteLine("am ajuns");
-            var waterway = new Waterway(coordinates, feature.Type == GeometryType.Polygon);
-            baseShape = waterway;
-            shapes.Enqueue(waterway, waterway.ZIndex);
-        }
-        else if (feature.Properties.Any(p => p == MapFeatureData.types.natural))
-        {
-            var coordinates = feature.Coordinates;
-            Console.WriteLine("am ajuns");
-            var waterway = new Waterway(coordinates, feature.Type == GeometryType.Polygon);
-            baseShape = waterway;
-            shapes.Enqueue(waterway, waterway.ZIndex);
-        }
-        else if (feature.Properties.Any(p => p == MapFeatureData.types.railway))
-        {
-            var coordinates = feature.Coordinates;
-            Console.WriteLine("am ajuns");
             var waterway = new Waterway(coordinates, feature.Type == GeometryType.Polygon);
             baseShape = waterway;
             shapes.Enqueue(waterway, waterway.ZIndex);
@@ -92,7 +62,7 @@ public static class TileRenderer
             baseShape = geoFeature;
             shapes.Enqueue(geoFeature, geoFeature.ZIndex);
         }
-        else if (feature.Properties.Any(p => p == MapFeatureData.types.railway))
+        else if (feature.Properties.Any(p => p == MapFeatureData.types.landuse))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Forest);
@@ -137,7 +107,7 @@ public static class TileRenderer
             baseShape = geoFeature;
             shapes.Enqueue(geoFeature, geoFeature.ZIndex);
         }
-        else if (feature.Type == GeometryType.Polygon && feature.Properties.Any(p => p == MapFeatureData.types.leisure))
+        else if (feature.Type == GeometryType.Polygon && feature.Properties.Any(p => p == MapFeatureData.types.amenity))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Residential);

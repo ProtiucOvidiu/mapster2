@@ -173,7 +173,7 @@ public unsafe class DataFile : IDisposable
         }
 
         var tiles = TiligSystem.GetTilesForBoundingBox(b.MinLat, b.MinLon, b.MaxLat, b.MaxLon);
-        Console.WriteLine("Aici tiles:" + tiles.Length);
+        // Console.WriteLine("Aici tiles:" + tiles.Length);
         for (var i = 0; i < tiles.Length; ++i)
         {
             var header = GetTile(tiles[i]);
@@ -181,7 +181,7 @@ public unsafe class DataFile : IDisposable
             {
                 continue;
             }
-            Console.WriteLine("Aici alete:" + header.Tile.Value.FeaturesCount);
+            // Console.WriteLine("Aici alete:" + header.Tile.Value.FeaturesCount);
             for (var j = 0; j < header.Tile.Value.FeaturesCount - 2500; ++j)
             {
                 var feature = GetFeature(j, header.TileOffset);
@@ -202,9 +202,7 @@ public unsafe class DataFile : IDisposable
                 {
                     GetString(header.Tile.Value.StringsOffsetInBytes, header.Tile.Value.CharactersOffsetInBytes, feature->LabelOffset, out label);
                 }
-                string[] types = new[] {
-        "highway", "water", "boundary", "admin_level", "place", "railway", "natural", "landuse", "building", "leisure",
-        "amenity", "name"};
+                string[] types = new[] {"highway", "water", "boundary", "admin_level", "place", "railway", "natural", "landuse", "building", "leisure", "amenity", "name",};
                 if (isFeatureInBBox)
                 {
                     var properties = new List<MapFeatureData.types>(feature->PropertyCount);
@@ -216,9 +214,8 @@ public unsafe class DataFile : IDisposable
                         {
                             try
                             {
-                                Console.WriteLine("Index = " + j);
                                 MapFeatureData.types my_key = (MapFeatureData.types)Enum.Parse(typeof(MapFeatureData.types), key.ToString());
-                                Console.WriteLine("Aici e cheia" + my_key);
+                                // Console.WriteLine("Aici e cheia " + my_key);
                                 properties.Add(my_key);
                             }
                             catch (Exception e)
