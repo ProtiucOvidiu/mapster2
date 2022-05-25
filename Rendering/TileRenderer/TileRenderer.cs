@@ -115,13 +115,15 @@ public static class TileRenderer
             shapes.Enqueue(geoFeature, geoFeature.ZIndex);
         }
 
-
-        for (var j = 0; j < baseShape.ScreenCoordinates.Length; ++j)
+        if (baseShape != null)
         {
-            boundingBox.MinX = Math.Min(boundingBox.MinX, baseShape.ScreenCoordinates[j].X);
-            boundingBox.MaxX = Math.Max(boundingBox.MaxX, baseShape.ScreenCoordinates[j].X);
-            boundingBox.MinY = Math.Min(boundingBox.MinY, baseShape.ScreenCoordinates[j].Y);
-            boundingBox.MaxY = Math.Max(boundingBox.MaxY, baseShape.ScreenCoordinates[j].Y);
+            for (var j = 0; j < baseShape.ScreenCoordinates.Length; ++j)
+            {
+                boundingBox.MinX = Math.Min(boundingBox.MinX, baseShape.ScreenCoordinates[j].X);
+                boundingBox.MaxX = Math.Max(boundingBox.MaxX, baseShape.ScreenCoordinates[j].X);
+                boundingBox.MinY = Math.Min(boundingBox.MinY, baseShape.ScreenCoordinates[j].Y);
+                boundingBox.MaxY = Math.Max(boundingBox.MaxY, baseShape.ScreenCoordinates[j].Y);
+            }
         }
 
 
