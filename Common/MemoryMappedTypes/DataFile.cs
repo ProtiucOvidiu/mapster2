@@ -24,7 +24,29 @@ public readonly ref struct MapFeatureData
     public GeometryType Type { get; init; }
     public ReadOnlySpan<char> Label { get; init; }
     public ReadOnlySpan<Coordinate> Coordinates { get; init; }
-    public Dictionary<string, string> Properties { get; init; }
+
+    public enum types
+    {
+        highway = 0,
+        water = 1,
+        railway = 2,
+        natural = 3,
+        name = 4,
+
+        boundary = 5,
+        admin_level = 6,
+
+        place = 7,
+
+        amenity = 8,
+
+        building =9,
+
+        leisure = 10,
+
+        landuse = 11,
+    }
+    public List<types> Properties { get; init; }
 }
 
 /// <summary>
@@ -151,6 +173,7 @@ public unsafe class DataFile : IDisposable
         }
 
         var tiles = TiligSystem.GetTilesForBoundingBox(b.MinLat, b.MinLon, b.MaxLat, b.MaxLon);
+        Console.WriteLine("Aici tiles:" + tiles.Length);
         for (var i = 0; i < tiles.Length; ++i)
         {
             var header = GetTile(tiles[i]);
@@ -158,7 +181,8 @@ public unsafe class DataFile : IDisposable
             {
                 continue;
             }
-            for (var j = 0; j < header.Tile.Value.FeaturesCount; ++j)
+            Console.WriteLine("Aici alete:" + header.Tile.Value.FeaturesCount);
+            for (var j = 0; j < header.Tile.Value.FeaturesCount - 2500; ++j)
             {
                 var feature = GetFeature(j, header.TileOffset);
                 var coordinates = GetCoordinates(header.Tile.Value.CoordinatesOffsetInBytes, feature->CoordinateOffset, feature->CoordinateCount);
@@ -178,14 +202,32 @@ public unsafe class DataFile : IDisposable
                 {
                     GetString(header.Tile.Value.StringsOffsetInBytes, header.Tile.Value.CharactersOffsetInBytes, feature->LabelOffset, out label);
                 }
-
+                string[] types = new[] {
+        "highway", "water", "boundary", "admin_level", "place", "railway", "natural", "landuse", "building", "leisure",
+        "amenity", "name"};
                 if (isFeatureInBBox)
                 {
-                    var properties = new Dictionary<string, string>(feature->PropertyCount);
+                    var properties = new List<MapFeatureData.types>(feature->PropertyCount);
+                    Console.WriteLine("Aici feature:" + feature->PropertyCount);
                     for (var p = 0; p < feature->PropertyCount; ++p)
                     {
                         GetProperty(header.Tile.Value.StringsOffsetInBytes, header.Tile.Value.CharactersOffsetInBytes, p * 2 + feature->PropertiesOffset, out var key, out var value);
-                        properties.Add(key.ToString(), value.ToString());
+                        if(types.Contains(key.ToString()))
+                        {
+                            try
+                            {
+                                Console.WriteLine("Index = " + j);
+                                MapFeatureData.types my_key = (MapFeatureData.types)Enum.Parse(typeof(MapFeatureData.types), key.ToString());
+                                Console.WriteLine("Aici e cheia" + my_key);
+                                properties.Add(my_key);
+                            }
+                            catch (Exception e)
+                            {
+                                continue;
+                            }
+                            
+                        }
+
                     }
 
                     if (!action(new MapFeatureData

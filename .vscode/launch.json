@@ -67,8 +67,8 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "/home/oprotiuc/uvt_3/net/mapster/Service/Service/bin/x64/Debug/net6.0/Service.dll",
-            "args": ["--input", "/home/oprotiuc/uvt_3/net/mapster/Tests/TestTileRenderer/MapData/andorra-10032022.bin"],
+            "program": "/home/oprotiuc/uvt_3/net/mapster2/Service/Service/bin/x64/Debug/net6.0/Service.dll",
+            "args": ["--input", "/home/oprotiuc/uvt_3/net/mapster2/Tests/TestTileRenderer/MapData/andorra-10032022.bin"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",

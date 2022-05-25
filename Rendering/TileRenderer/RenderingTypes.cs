@@ -87,7 +87,16 @@ public struct GeoFeature : BaseShape
         if (!IsPolygon)
         {
             var pen = new Pen(color, 1.2f);
-            context.DrawLines(pen, ScreenCoordinates);
+            try
+            {
+                context.DrawLines(pen, ScreenCoordinates);
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
+                
+                throw;
+            }
+            
         }
         else
         {
@@ -108,40 +117,22 @@ public struct GeoFeature : BaseShape
     public GeoFeature(ReadOnlySpan<Coordinate> c, MapFeatureData feature)
     {
         IsPolygon = feature.Type == GeometryType.Polygon;
-        var naturalKey = feature.Properties.FirstOrDefault(x => x.Key == "natural").Value;
+        var naturalKey = feature.Properties.FirstOrDefault(x => x == MapFeatureData.types.natural);
         Type = GeoFeatureType.Unknown;
-        if (naturalKey != null)
+
+        if (naturalKey == MapFeatureData.types.natural)
         {
-            if (naturalKey == "fell" ||
-                naturalKey == "grassland" ||
-                naturalKey == "heath" ||
-                naturalKey == "moor" ||
-                naturalKey == "scrub" ||
-                naturalKey == "wetland")
-            {
-                Type = GeoFeatureType.Plain;
-            }
-            else if (naturalKey == "wood" ||
-                     naturalKey == "tree_row")
-            {
-                Type = GeoFeatureType.Forest;
-            }
-            else if (naturalKey == "bare_rock" ||
-                     naturalKey == "rock" ||
-                     naturalKey == "scree")
-            {
-                Type = GeoFeatureType.Mountains;
-            }
-            else if (naturalKey == "beach" ||
-                     naturalKey == "sand")
-            {
-                Type = GeoFeatureType.Desert;
-            }
-            else if (naturalKey == "water")
-            {
-                Type = GeoFeatureType.Water;
-            }
+            Type = GeoFeatureType.Plain;
         }
+        else if (naturalKey == MapFeatureData.types.natural)
+        {
+            Type = GeoFeatureType.Forest;
+        }
+        else if (naturalKey == MapFeatureData.types.water)
+        {
+            Type = GeoFeatureType.Water;
+        }
+
 
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
@@ -163,8 +154,17 @@ public struct Railway : BaseShape
         {
             2.0f, 4.0f, 2.0f
         });
-        context.DrawLines(penA, ScreenCoordinates);
+        try
+        {
+            context.DrawLines(penA, ScreenCoordinates);
         context.DrawLines(penB, ScreenCoordinates);
+        }
+        catch (System.ArgumentOutOfRangeException)
+        {
+            
+            throw;
+        }
+        
     }
 
     public Railway(ReadOnlySpan<Coordinate> c)
@@ -202,7 +202,7 @@ public struct PopulatedPlace : BaseShape
         for (var i = 0; i < c.Length; i++)
             ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
                 (float)MercatorProjection.latToY(c[i].Latitude));
-        var name = feature.Properties.FirstOrDefault(x => x.Key == "name").Value;
+        var name = feature.Properties.FirstOrDefault(x => x == MapFeatureData.types.name);
 
         if (feature.Label.IsEmpty)
         {
@@ -211,7 +211,7 @@ public struct PopulatedPlace : BaseShape
         }
         else
         {
-            Name = string.IsNullOrWhiteSpace(name) ? feature.Label.ToString() : name;
+            Name = name !=0 ? feature.Label.ToString() : "name";
             ShouldRender = true;
         }
     }
@@ -224,13 +224,9 @@ public struct PopulatedPlace : BaseShape
             return false;
         }
         foreach (var entry in feature.Properties)
-            if (entry.Key.StartsWith("place"))
+            if (entry == MapFeatureData.types.place)
             {
-                if (entry.Value.StartsWith("city") || entry.Value.StartsWith("town") ||
-                    entry.Value.StartsWith("locality") || entry.Value.StartsWith("hamlet"))
-                {
                     return true;
-                }
             }
         return false;
     }
@@ -264,11 +260,11 @@ public struct Border : BaseShape
         var foundLevel = false;
         foreach (var entry in feature.Properties)
         {
-            if (entry.Key.StartsWith("boundary") && entry.Value.StartsWith("administrative"))
+            if (entry == MapFeatureData.types.boundary)
             {
                 foundBoundary = true;
             }
-            if (entry.Key.StartsWith("admin_level") && entry.Value == "2")
+            if (entry == MapFeatureData.types.admin_level)
             {
                 foundLevel = true;
             }
@@ -293,7 +289,16 @@ public struct Waterway : BaseShape
         if (!IsPolygon)
         {
             var pen = new Pen(Color.LightBlue, 1.2f);
-            context.DrawLines(pen, ScreenCoordinates);
+            try
+            {
+                context.DrawLines(pen, ScreenCoordinates);
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
+                
+                throw;
+            }
+            
         }
         else
         {
